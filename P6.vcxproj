@@ -131,11 +131,13 @@
     <ClCompile Include="src\main.c" />
     <ClCompile Include="src\model.c" />
     <ClCompile Include="src\ui.c" />
+    <ClCompile Include="validator.c" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\model.h" />
     <ClInclude Include="src\service.h" />
     <ClInclude Include="src\ui.h" />
+    <ClInclude Include="validator.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

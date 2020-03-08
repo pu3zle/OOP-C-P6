@@ -1,4 +1,4 @@
-#include "service.h"
+
 #include "ui.h"
 
 
@@ -62,18 +62,18 @@ int validate_command(char* buffer, char* commands[MAX_CMD_LEN])
 }
 
 //IMPLEMENT THE FUNCTIONS
-void ui_add(char* params)
+void ui_add(ListMP* limp, char* params)
 {}
-void ui_modify(char* params)
+void ui_modify(ListMP* limp, char* params)
 {}
-void ui_del(char* params)
+void ui_del(ListMP* limp, char* params)
 {}
-void ui_c_view(char* params)
+void ui_c_view(ListMP* limp, char* params)
 {}
-void ui_o_view(char* params)
+void ui_o_view(ListMP* limp, char* params)
 {}
 
-void run()
+void run(ListMP* limp)
 {
 	char cmd[MAX_CMD_LEN];
 	size_t cmd_length = 0, command_index = 0;
@@ -83,7 +83,7 @@ void run()
 
 	char* commands[MAX_CMD_LEN] = { "add", "modify", "del", "c_view", "o_view" };
 
-	void(*commander[NO_COMMANDS])(char* params) = { ui_add, ui_modify, ui_del, ui_c_view, ui_o_view };
+	void(*commander[NO_COMMANDS])(ListMP* limp, char* params) = { ui_add, ui_modify, ui_del, ui_c_view, ui_o_view };
 
 	//PARAMS
 	char params[PARAMS_L];
@@ -108,7 +108,7 @@ void run()
 				get_params(cmd, params, cmd_length, &params_length);
 				//CHECK PARAMS
 				//VALIDATE 'EM
-				commander[command_index](params);
+				commander[command_index](limp, params);
 			}
 			else {
 				printf("Unknown command!\nType \"help\" to see the commands!\n");

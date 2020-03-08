@@ -27,6 +27,9 @@
     <ClCompile Include="src\ui.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="validator.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\model.h">
@@ -36,6 +39,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\ui.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="validator.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

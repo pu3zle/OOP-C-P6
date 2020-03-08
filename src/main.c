@@ -26,6 +26,7 @@ e) Vizualizare materii prime din stoc ordonat dupa nume sau cantitate disponibil
 
 int main()
 {
-	run();
+	ListMP limp = l_create();
+	run(&limp);
 	return 0;
 }
