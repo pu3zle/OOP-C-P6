@@ -63,7 +63,14 @@ int validate_command(char* buffer, char* commands[MAX_CMD_LEN])
 
 //IMPLEMENT THE FUNCTIONS
 void ui_add(ListMP* limp, char* params)
-{}
+{	
+	char* arguments[3];
+	char* ptr = strtok(params, " ,.-");
+	while (pch != NULL)
+	{
+
+	}
+}
 void ui_modify(ListMP* limp, char* params)
 {}
 void ui_del(ListMP* limp, char* params)

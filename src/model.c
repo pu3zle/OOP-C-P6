@@ -1,7 +1,7 @@
 #include "model.h"
 #pragma warning(disable:4996)
 
-m_prim create(char* name, char* producator, size_t quantity)
+m_prim create(const char* name, const char* producator, const size_t quantity)
 {
 	m_prim matPrim;
 	size_t nL = strlen(name);

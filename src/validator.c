@@ -1,11 +1,11 @@
 #include "validator.h"
 
-int validate_string(char* str)
+int validate_string(const char* str)
 {
-	return strlen(str) != 0;
+	return strlen(str) == 0;
 }
 
-int validate_quantity(int q)
+int validate_quantity(const int q)
 {
-	return q >= 0;
+	return q <= 0;
 }

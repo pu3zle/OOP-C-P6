@@ -1,5 +1,5 @@
 #pragma once
 
-int validate_string(char* str);
+int validate_string(const char* str);
 
-int validate_quantity(int q);
+int validate_quantity(const int q);

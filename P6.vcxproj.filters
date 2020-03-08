@@ -27,7 +27,7 @@
     <ClCompile Include="src\ui.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="validator.c">
+    <ClCompile Include="src\validator.c">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -41,7 +41,7 @@
     <ClInclude Include="src\ui.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="validator.h">
+    <ClInclude Include="src\validator.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
