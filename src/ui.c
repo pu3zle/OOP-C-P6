@@ -7,7 +7,7 @@
 #define PARAMS_L 20
 
 
-int read_command(char* buffer)
+size_t read_command(char* buffer)
 {
 	size_t i = 0;
 	size_t stream_length = 0;
@@ -28,7 +28,7 @@ int read_command(char* buffer)
 		}
 		
 	}
-	buffer[i] = NULL;
+	buffer[i] = '\0';
 	if (i == 0)
 		return -1;
 	if (stream_length > MAX_CMD_LEN)
@@ -36,7 +36,7 @@ int read_command(char* buffer)
 	return i;
 }
 
-void get_params(char* cmd, char* params, int cmd_length, int* params_length)
+void get_params(char* cmd, char* params, size_t cmd_length, size_t* params_length)
 {
 	for (size_t i = 0; i < cmd_length; i++)
 	{
@@ -53,7 +53,7 @@ void get_params(char* cmd, char* params, int cmd_length, int* params_length)
 
 int validate_command(char* buffer, char* commands[MAX_CMD_LEN])
 {
-	for (size_t i = 0; i < NO_COMMANDS; i++)
+	for (int i = 0; i < NO_COMMANDS; i++)
 	{
 		if (strcmp(buffer, commands[i]) == 0)
 			return i;
@@ -76,7 +76,7 @@ void ui_o_view(char* params)
 void run()
 {
 	char cmd[MAX_CMD_LEN];
-	int cmd_length = 0, command_index = 0;
+	size_t cmd_length = 0, command_index = 0;
 
 	//COMMANDS 
 	char* menu = "\nadd - Adds <materie_prima>\nmodify - Modifies <materie_prima>\ndel - Deletes <materie_prima>\n\n";
@@ -87,7 +87,7 @@ void run()
 
 	//PARAMS
 	char params[PARAMS_L];
-	int params_length = 0;
+	size_t params_length = 0;
 
 	while (true)
 	{
@@ -105,7 +105,7 @@ void run()
 
 			if (command_index != -1)
 			{
-				get_params(cmd, params, cmd_length, params_length);
+				get_params(cmd, params, cmd_length, &params_length);
 				//CHECK PARAMS
 				//VALIDATE 'EM
 				commander[command_index](params);
