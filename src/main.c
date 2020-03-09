@@ -28,5 +28,9 @@ int main()
 {
 	ListMP limp = l_create();
 	run(&limp);
+	/*add(&limp, "zahar", "cozmin", 10);
+	add(&limp, "faina", "cozmin", 10);
+	add(&limp, "cozonac", "cozmin", 10);*/
+	//print_all(&limp);
 	return 0;
 }

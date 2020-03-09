@@ -24,3 +24,5 @@ ListMP l_create();
 
 m_prim create(const char* name, const char* producator, const size_t quantity);
 
+void l_add(ListMP* limp, m_prim* matPrim);
+
