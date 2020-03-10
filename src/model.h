@@ -22,5 +22,7 @@ typedef struct {
 
 ListMP l_create();
 
-m_prim create(const char* name, const char* producator, const size_t quantity);
+void l_add(ListMP* limp, m_prim* matPrim);
+m_prim create(char* name, char* producator, size_t quantity);
+
 
