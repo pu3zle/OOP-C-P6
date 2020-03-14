@@ -1,7 +1,7 @@
 #include "model.h"
 #pragma warning(disable:4996)
 
-m_prim create(const char* name, const char* producator, const size_t quantity)
+m_prim create(char* name, char* producator, size_t quantity)
 {
 	m_prim matPrim;
 	size_t nL = strlen(name);
@@ -18,6 +18,27 @@ m_prim create(const char* name, const char* producator, const size_t quantity)
 	return matPrim;
 }
 
+void set_name(m_prim* matPrim, char* name)
+{
+	int n = strlen(name);
+	strcpy(matPrim->name, name);
+	matPrim->name[n] = '\0';
+	matPrim->name_length = n;
+}
+
+void set_prod(m_prim* matPrim, char* prod)
+{
+	int n = strlen(prod);
+	strcpy(matPrim->producator, prod);
+	matPrim->producator[n] = '\0';
+	matPrim->prod_length = n;
+}
+
+void set_quantity(m_prim* matPrim, int q)
+{
+	matPrim->quantity = q;
+}
+
 ListMP l_create()
 {
 	ListMP limp;
@@ -25,10 +46,4 @@ ListMP l_create()
 	return limp;
 }
 
-void l_add(ListMP* limp, m_prim* matPrim)
-{
-	strcpy(limp->matPrim[limp->length].name, matPrim->name);
-	strcpy(limp->matPrim[limp->length].producator, matPrim->producator);
-	limp->matPrim[limp->length].quantity = matPrim->quantity;
-	limp->length++;
-}
+
