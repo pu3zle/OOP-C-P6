@@ -105,6 +105,7 @@
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <TreatWarningAsError>true</TreatWarningAsError>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -128,17 +129,17 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="src\service.c" />
+    <ClCompile Include="src\service\service.c" />
     <ClCompile Include="src\main.c" />
-    <ClCompile Include="src\model.c" />
-    <ClCompile Include="src\ui.c" />
-    <ClCompile Include="src\validator.c" />
+    <ClCompile Include="src\models\model.c" />
+    <ClCompile Include="src\ui\ui.c" />
+    <ClCompile Include="src\validator\validator.c" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\model.h" />
-    <ClInclude Include="src\service.h" />
-    <ClInclude Include="src\ui.h" />
-    <ClInclude Include="src\validator.h" />
+    <ClInclude Include="src\models\model.h" />
+    <ClInclude Include="src\service\service.h" />
+    <ClInclude Include="src\ui\ui.h" />
+    <ClInclude Include="src\validator\validator.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -1,5 +1,5 @@
 #include "ui.h"
-
+#pragma warning(disable:4996)
 
 #define MAX_CMD_LEN 30
 #define NO_COMMANDS 6
@@ -30,7 +30,7 @@ int validate_int(char* q)
 */
 void print_mat_prim(m_prim* matPrim)
 {
-	printf("Numele produsului: %s\nNumele producatorului: %s\nCantitate: %d\n\n", matPrim->name, matPrim->producator, matPrim->quantity);
+	printf("Numele produsului: %s\nNumele producatorului: %s\nCantitate: %llu\n\n", matPrim->name, matPrim->producator, matPrim->quantity);
 }
 
 /*
@@ -521,7 +521,7 @@ void run(ListMP* limp)
 	size_t cmd_length = 0, command_index = 0;
 
 	//COMMANDS 
-	char* menu = "\n  add - Adds <materie_prima>\t  ex: add faina panemar 12\n\n  modify - Modifies <materie_prima>\t  ex: modify -n faina paine\n\t-n -> the name,\n\t-p -> the producer,\n\t-q -> the quantity\n\n  del - Deletes <materie_prima>\t  ex: del paine\n\n  c_view - View the list based on a criteria \t  ex: c_view -n p\n\t-n -> <materiile_prime> which names that start with a character,\n\t-q -> <materiile_prime> which quantity is less than a given number;\n\n  o_view - View the list ordered by:\t  ex: o_view -q\n\t-n -> name\n\t-q -> quantity\n\n";
+	char* menu = "\n  add - Adds <materie_prima>\t  ex: add faina panemar 12\n\n  modify - Modifies <materie_prima>\t  ex: modify -n faina paine\n\t-n -> the name,\n\t-p -> the producer,\n\t-q -> the quantity\n\n  del - Deletes <materie_prima>\t  ex: del paine\n\n  c_view - View the list based on a criteria \t  ex: c_view -n p\n\t-n -> <materiile_prime> which names that start with a character,\n\t-q -> <materiile_prime> which quantity is less than a given number;\n\n  o_view - View the list ordered by:\t  ex: o_view -q\n\t-n -> name\n\t-q -> quantity\n\n  print - Prints the list of <materii_prime>\tex: print\n\n  exit - Exits the program\n\n";
 
 	char* commands[MAX_CMD_LEN] = { "add", "modify", "del", "c_view", "o_view", "print" };
 

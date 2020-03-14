@@ -22,12 +22,11 @@ Aplicatia permite:
 5) Vizualizare materii prime din stoc ordonat dupa nume sau cantitate disponibila (crescator/descrescator)                                 
 */
 
-#include "ui.h"
+#include "ui/ui.h"
 
 int main()
 {
 	ListMP limp = l_create();
 	run(&limp);
-	//TO DO: Same product name, different maker ? 
 	return 0;
 }

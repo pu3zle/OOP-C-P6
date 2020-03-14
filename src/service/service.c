@@ -1,4 +1,5 @@
 #include "service.h"
+#pragma warning(disable:4996)
 
 void l_add(ListMP* limp, m_prim* matPrim)
 {
@@ -29,9 +30,9 @@ int validate_unique(const ListMP* limp, char* name)
 	return 0;
 }
 
-int search(ListMP* limp, char* name)
+ int search(ListMP* limp, char* name)
 {
-	for (size_t i = 0; i < limp->length; i++)
+	for (int i = 0; i < limp->length; i++)
 	{
 		if (strcmp(limp->matPrim[i].name, name) == 0)
 			return i;

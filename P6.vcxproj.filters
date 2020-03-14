@@ -18,30 +18,30 @@
     <ClCompile Include="src\main.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\model.c">
+    <ClCompile Include="src\models\model.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\service.c">
+    <ClCompile Include="src\service\service.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\ui.c">
+    <ClCompile Include="src\validator\validator.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\validator.c">
+    <ClCompile Include="src\ui\ui.c">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\model.h">
+    <ClInclude Include="src\models\model.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\service.h">
+    <ClInclude Include="src\service\service.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\ui.h">
+    <ClInclude Include="src\validator\validator.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\validator.h">
+    <ClInclude Include="src\ui\ui.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

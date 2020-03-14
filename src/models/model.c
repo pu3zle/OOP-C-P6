@@ -20,7 +20,7 @@ m_prim create(char* name, char* producator, size_t quantity)
 
 void set_name(m_prim* matPrim, char* name)
 {
-	int n = strlen(name);
+	size_t n = strlen(name);
 	strcpy(matPrim->name, name);
 	matPrim->name[n] = '\0';
 	matPrim->name_length = n;
@@ -28,7 +28,7 @@ void set_name(m_prim* matPrim, char* name)
 
 void set_prod(m_prim* matPrim, char* prod)
 {
-	int n = strlen(prod);
+	size_t n = strlen(prod);
 	strcpy(matPrim->producator, prod);
 	matPrim->producator[n] = '\0';
 	matPrim->prod_length = n;
