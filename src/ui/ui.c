@@ -1,7 +1,7 @@
 #include "ui.h"
 #pragma warning(disable:4996)
 
-#define MAX_CMD_LEN 30
+#define MAX_CMD_LEN 50
 #define NO_COMMANDS 6
 #define PARAMS_L 20
 

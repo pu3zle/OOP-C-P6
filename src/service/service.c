@@ -3,8 +3,10 @@
 
 void l_add(ListMP* limp, m_prim* matPrim)
 {
-	strcpy(limp->matPrim[limp->length].name, matPrim->name);
-	strcpy(limp->matPrim[limp->length].producator, matPrim->producator);
+	limp->matPrim[limp->length].name =  matPrim->name;
+	limp->matPrim[limp->length].producator = matPrim->producator;
+	limp->matPrim[limp->length].name_length = matPrim->name_length;
+	limp->matPrim[limp->length].prod_length = matPrim->prod_length;
 	limp->matPrim[limp->length].quantity = matPrim->quantity;
 	limp->length++;
 }
@@ -102,8 +104,8 @@ int modify(ListMP* limp, char* name, char* modify, int op)
 
 void cpy(m_prim* m1, m_prim* m2)
 {
-	strcpy(m1->name, m2->name);
-	strcpy(m1->producator, m2->producator);
+	m1->name = m2->name;
+	m1->producator = m2->producator;
 	m1->name_length = m2->name_length;
 	m1->prod_length = m2->prod_length;
 	m1->quantity = m2->quantity;
@@ -116,13 +118,25 @@ int del(ListMP* limp, char* name)
 		return -4;
 
 	if (position == limp->length - 1)
+	{
 		limp->length--;
+		delete(limp->matPrim[position].name, limp->matPrim[position].name_length + 1);
+		delete(limp->matPrim[position].producator, limp->matPrim[position].prod_length + 1);
+	}
 
 	else {
+		delete(limp->matPrim[position].name, limp->matPrim[position].name_length + 1);
+		delete(limp->matPrim[position].producator, limp->matPrim[position].prod_length + 1);
 
 		for (size_t i = position; i < limp->length - 1; i++)
 			cpy(&(limp->matPrim[i]), &(limp->matPrim[i + 1]));
 		limp->length--;
+
+		limp->matPrim[limp->length].name = NULL;
+		limp->matPrim[limp->length].producator = NULL;
+		delete(limp->matPrim[limp->length].name, 0);
+		delete(limp->matPrim[limp->length].producator, 0);
+
 	}
 
 	return 0;

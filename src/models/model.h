@@ -4,11 +4,15 @@
 #define true 1
 #define false 0
 
-typedef struct {
-	char name[50];
-	size_t name_length;
+extern void* new(size_t size);
 
-	char producator[50];
+extern void delete(void* memory, size_t size);
+
+typedef struct {
+	char* name;
+	size_t name_length;
+	
+	char* producator;
 	size_t prod_length;
 
 	size_t quantity;

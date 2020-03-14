@@ -20,6 +20,10 @@ int sort_name(ListMP* limp);
 
 int sort_quantity(ListMP* limp);
 
+extern void* new(size_t size);
 
+extern void delete(void* memory, size_t size);
+
+extern void PrintCurrentUsage();
 
 
