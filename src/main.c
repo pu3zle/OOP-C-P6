@@ -26,6 +26,7 @@ Aplicatia permite:
 #include <crtdbg.h> 
 #include "ui/ui.h"
 #include <stdlib.h>
+#include "tests\tests.h"
 
 typedef struct {
 
@@ -58,24 +59,16 @@ void PrintCurrentUsage()
 	printf("There are currently %llu bytes of memory in use!\n", currentUsage);
 }
 
-void destroy(ListMP* limp)
-{
-	for (size_t i = 0; i < limp->length; i++)
-	{
-		delete(limp->matPrim[i].name, limp->matPrim[i].name_length+1);
-		delete(limp->matPrim[i].producator, limp->matPrim[i].prod_length+1);
-	}
-
-}
-
 int main()
 {
+	runTests();
+
 	s_AllocMaster.TotalAllocated = 0;
 	s_AllocMaster.TotalFreed = 0;
 
 	ListMP limp = l_create();
 	run(&limp);
-	destroy(&limp);
+	destroyListMP(&limp);
 	PrintCurrentUsage();
 	_CrtDumpMemoryLeaks();
 	return 0;

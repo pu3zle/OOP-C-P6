@@ -25,20 +25,17 @@ int char2int(char* q)
 int validate_unique(const ListMP* limp, char* name)
 {
 	for (size_t i = 0; i < limp->length; i++)
-	{
 		if (strcmp(limp->matPrim[i].name, name) == 0)
 			return 1;
-	}
+
 	return 0;
 }
 
  int search(ListMP* limp, char* name)
 {
 	for (int i = 0; i < limp->length; i++)
-	{
 		if (strcmp(limp->matPrim[i].name, name) == 0)
 			return i;
-	}
 	return -1;
 }
 
@@ -54,7 +51,7 @@ int add(ListMP* limp, char* name, char* producator, int quantity)
 
 	if (validate_unique(limp, name) == 0)
 	{
-		m_prim matPrim = create(name, producator, quantity);
+		m_prim matPrim = m_create(name, producator, quantity);
 		l_add(limp, &matPrim);
 	}
 	else

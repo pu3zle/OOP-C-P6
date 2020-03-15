@@ -1,19 +1,19 @@
 #include "model.h"
 #pragma warning(disable:4996)
 
-m_prim create(char* name, char* producator, size_t quantity)
+m_prim m_create(char* name, char* producator, size_t quantity)
 {
 	m_prim matPrim;
 
 	size_t nL = strlen(name);
 	matPrim.name_length = nL;
-	matPrim.name = (char*)new(nL+1);
+	matPrim.name = (char*)new(nL + 1);
 	strncpy(matPrim.name, name, nL);
 	matPrim.name[nL] = '\0';
 
 	size_t pL = strlen(producator);
 	matPrim.prod_length = pL;
-	matPrim.producator = (char*)new(pL+1);
+	matPrim.producator = (char*)new(pL + 1);
 	strncpy(matPrim.producator, producator, pL);
 	matPrim.producator[pL] = '\0';
 
@@ -57,4 +57,17 @@ ListMP l_create()
 	return limp;
 }
 
+void destroyM_Prim(m_prim* matPrim)
+{
+	delete(matPrim->name, matPrim->name_length + 1);
+	delete(matPrim->producator, matPrim->prod_length + 1);
+}
 
+void destroyListMP(ListMP* limp)
+{
+	for (size_t i = 0; i < limp->length; i++)
+	{
+		delete(limp->matPrim[i].name, limp->matPrim[i].name_length + 1);
+		delete(limp->matPrim[i].producator, limp->matPrim[i].prod_length + 1);
+	}
+}

@@ -132,12 +132,14 @@
     <ClCompile Include="src\service\service.c" />
     <ClCompile Include="src\main.c" />
     <ClCompile Include="src\models\model.c" />
+    <ClCompile Include="src\tests\tests.c" />
     <ClCompile Include="src\ui\ui.c" />
     <ClCompile Include="src\validator\validator.c" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\models\model.h" />
     <ClInclude Include="src\service\service.h" />
+    <ClInclude Include="src\tests\tests.h" />
     <ClInclude Include="src\ui\ui.h" />
     <ClInclude Include="src\validator\validator.h" />
   </ItemGroup>

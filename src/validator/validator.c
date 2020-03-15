@@ -2,7 +2,8 @@
 
 int validate_string(const char* str)
 {
-	return strlen(str) == 0;
+	char* ptr = strtok((char*)str, (const char*)" ");
+	return (ptr == NULL);
 }
 
 int validate_quantity(const int q)
