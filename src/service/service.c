@@ -3,11 +3,6 @@
 
 void l_add(ListMP* limp, MatPrim* matPrim)
 {
-	/*limp->matPrim[limp->length].name =  matPrim->name;
-	limp->matPrim[limp->length].producator = matPrim->producator;
-	limp->matPrim[limp->length].name_length = matPrim->name_length;
-	limp->matPrim[limp->length].prod_length = matPrim->prod_length;
-	limp->matPrim[limp->length].quantity = matPrim->quantity;*/
 	CpyLimp(&(limp->matPrim[limp->length]), matPrim);
 	limp->length++;
 }
@@ -40,19 +35,24 @@ int validate_unique(const ListMP* limp, char* name)
 	return -1;
 }
 
-int add(ListMP* limp, char* name, char* producator, int quantity)
+int add(ListMP* limp, char* name, char* provider, int quantity)
 {	
 	//Data validation
 	int errors = 0;
 	errors += validate_string(name);
-	errors += 2 * validate_string(producator);
+	errors += 2 * validate_string(provider);
 	errors += 4 * validate_quantity(quantity);
 	if (errors != 0)
 		return errors;
 
 	if (validate_unique(limp, name) == 0)
 	{
-		MatPrim matPrim = MatPrimCreate(name, producator, quantity);
+		MatPrim matPrim = MatPrimCreate(name, provider, quantity);
+		if (limp->length == limp->size)
+		{
+			ReserveNewMatPrim(&(limp->matPrim), 2 * limp->size, limp->length);
+			limp->size *= 2;
+		}
 		l_add(limp, &matPrim);
 	}
 	else
@@ -83,7 +83,7 @@ int modify(ListMP* limp, char* name, char* modify, int op)
 	case 1:
 		error_code = validate_string(modify);
 		if (error_code == 0)
-			set_prod(&(limp->matPrim[found]), modify);
+			set_provider(&(limp->matPrim[found]), modify);
 		else return 2;
 		break;
 	case 2:
@@ -111,22 +111,29 @@ int del(ListMP* limp, char* name)
 	{
 		limp->length--;
 		free(limp->matPrim[position].name);
-		free(limp->matPrim[position].producator);
+		free(limp->matPrim[position].provider);
 	}
 
 	else {
 		free(limp->matPrim[position].name);
-		free(limp->matPrim[position].producator);
+		free(limp->matPrim[position].provider);
 
 		for (size_t i = position; i < limp->length - 1; i++)
 			CpyLimp(&(limp->matPrim[i]), &(limp->matPrim[i + 1]));
+
 		limp->length--;
 
 		limp->matPrim[limp->length].name = NULL;
-		limp->matPrim[limp->length].producator = NULL;
+		limp->matPrim[limp->length].provider = NULL;
 		free(limp->matPrim[limp->length].name);
-		free(limp->matPrim[limp->length].producator);
+		free(limp->matPrim[limp->length].provider);
 
+	}
+
+	if (limp->length == limp->size / 4)
+	{
+		ReserveNewMatPrim(&(limp->matPrim), limp->size / 2, limp->length);
+		limp->size /= 2;
 	}
 
 	return 0;

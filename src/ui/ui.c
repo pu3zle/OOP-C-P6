@@ -31,7 +31,7 @@ int validate_int(char* q)
 */
 void print_mat_prim(MatPrim* matPrim)
 {
-	printf("Numele produsului: %s\nNumele producatorului: %s\nCantitate: %llu\n\n", matPrim->name, matPrim->producator, matPrim->quantity);
+	printf("Numele produsului: %s\nNumele producatorului: %s\nCantitate: %llu\n\n", matPrim->name, matPrim->provider, matPrim->quantity);
 }
 
 /*
@@ -122,13 +122,13 @@ int c_print(ListMP* limp, char* criteria, int mode)
 /*
 	Functie care sparge string-ul "params" in elementele componente necesare operatiei de adaugare:
 	 - name
-	 - producator
+	 - provider
 	 - cantitate
 	Se ocupa si de validarea numarului de parametrii.
 	Returneaza coduri de eroare pentru fiecare caz ce poate sa apara.
 	Codurile de eroare pot fi consultate in functia ErrorHandler
 */
-int split_params_add(char* params, char** name, char** prod, char** q)
+int split_params_add(char* params, char** name, char** provider, char** q)
 {	
 	size_t length = 0;
 
@@ -149,8 +149,8 @@ int split_params_add(char* params, char** name, char** prod, char** q)
 		return -2;
 	}
 	length = strlen(ptr) + 1;
-	*prod = (char*)malloc(length);
-	strcpy(*prod, ptr);
+	*provider = (char*)malloc(length);
+	strcpy(*provider, ptr);
 
 
 	//get the quantity
@@ -158,7 +158,7 @@ int split_params_add(char* params, char** name, char** prod, char** q)
 	if (ptr == NULL)
 	{
 		free(*name);
-		free(*prod);
+		free(*provider);
 		return -2;
 	}
 	length = strlen(ptr) + 1;
@@ -169,7 +169,7 @@ int split_params_add(char* params, char** name, char** prod, char** q)
 	if (ptr != NULL)
 	{
 		free(*name);
-		free(*prod);
+		free(*provider);
 		free(*q);
 		return -2;
 	}
@@ -429,13 +429,13 @@ int split_params_c_view(char* params, char** option, char** criteria)
 int ui_add(ListMP* limp, char* params)
 {
 	char* name = NULL;
-	char* prod = NULL;
+	char* provider = NULL;
 	char* q = NULL;
 	int quantity = 0;
 
 	int error_code = 0;
 
-	error_code = split_params_add(params, &name, &prod, &q);
+	error_code = split_params_add(params, &name, &provider, &q);
 	if (error_code != 0)
 		return error_code;
 
@@ -446,14 +446,14 @@ int ui_add(ListMP* limp, char* params)
 	else
 	{
 		free(name);
-		free(prod);
+		free(provider);
 		free(q);
 		return error_code;
 	}
 
-	error_code = add(limp, name, prod, quantity);
+	error_code = add(limp, name, provider, quantity);
 	free(name);
-	free(prod);
+	free(provider);
 	free(q);
 	return error_code;
 
