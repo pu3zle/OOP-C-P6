@@ -1,13 +1,14 @@
 #include "service.h"
 #pragma warning(disable:4996)
 
-void l_add(ListMP* limp, m_prim* matPrim)
+void l_add(ListMP* limp, MatPrim* matPrim)
 {
-	limp->matPrim[limp->length].name =  matPrim->name;
+	/*limp->matPrim[limp->length].name =  matPrim->name;
 	limp->matPrim[limp->length].producator = matPrim->producator;
 	limp->matPrim[limp->length].name_length = matPrim->name_length;
 	limp->matPrim[limp->length].prod_length = matPrim->prod_length;
-	limp->matPrim[limp->length].quantity = matPrim->quantity;
+	limp->matPrim[limp->length].quantity = matPrim->quantity;*/
+	CpyLimp(&(limp->matPrim[limp->length]), matPrim);
 	limp->length++;
 }
 
@@ -51,7 +52,7 @@ int add(ListMP* limp, char* name, char* producator, int quantity)
 
 	if (validate_unique(limp, name) == 0)
 	{
-		m_prim matPrim = m_create(name, producator, quantity);
+		MatPrim matPrim = MatPrimCreate(name, producator, quantity);
 		l_add(limp, &matPrim);
 	}
 	else
@@ -99,14 +100,6 @@ int modify(ListMP* limp, char* name, char* modify, int op)
 
 }
 
-void cpy(m_prim* m1, m_prim* m2)
-{
-	m1->name = m2->name;
-	m1->producator = m2->producator;
-	m1->name_length = m2->name_length;
-	m1->prod_length = m2->prod_length;
-	m1->quantity = m2->quantity;
-}
 
 int del(ListMP* limp, char* name)
 {
@@ -117,22 +110,22 @@ int del(ListMP* limp, char* name)
 	if (position == limp->length - 1)
 	{
 		limp->length--;
-		delete(limp->matPrim[position].name, limp->matPrim[position].name_length + 1);
-		delete(limp->matPrim[position].producator, limp->matPrim[position].prod_length + 1);
+		free(limp->matPrim[position].name);
+		free(limp->matPrim[position].producator);
 	}
 
 	else {
-		delete(limp->matPrim[position].name, limp->matPrim[position].name_length + 1);
-		delete(limp->matPrim[position].producator, limp->matPrim[position].prod_length + 1);
+		free(limp->matPrim[position].name);
+		free(limp->matPrim[position].producator);
 
 		for (size_t i = position; i < limp->length - 1; i++)
-			cpy(&(limp->matPrim[i]), &(limp->matPrim[i + 1]));
+			CpyLimp(&(limp->matPrim[i]), &(limp->matPrim[i + 1]));
 		limp->length--;
 
 		limp->matPrim[limp->length].name = NULL;
 		limp->matPrim[limp->length].producator = NULL;
-		delete(limp->matPrim[limp->length].name, 0);
-		delete(limp->matPrim[limp->length].producator, 0);
+		free(limp->matPrim[limp->length].name);
+		free(limp->matPrim[limp->length].producator);
 
 	}
 
@@ -148,10 +141,10 @@ int sort_name(ListMP* limp)
 		{
 			if (strcmp(limp->matPrim[i].name, limp->matPrim[j].name) == 1)
 			{
-				m_prim aux;
-				cpy(&aux, &(limp->matPrim[i]));
-				cpy(&(limp->matPrim[i]), &(limp->matPrim[j]));
-				cpy(&(limp->matPrim[j]), &aux);
+				MatPrim aux;
+				CpyLimp(&aux, &(limp->matPrim[i]));
+				CpyLimp(&(limp->matPrim[i]), &(limp->matPrim[j]));
+				CpyLimp(&(limp->matPrim[j]), &aux);
 			}
 		}
 	}
@@ -167,10 +160,10 @@ int sort_quantity(ListMP* limp)
 		{
 			if (limp->matPrim[i].quantity > limp->matPrim[j].quantity)
 			{
-				m_prim aux;
-				cpy(&aux, &(limp->matPrim[i]));
-				cpy(&(limp->matPrim[i]), &(limp->matPrim[j]));
-				cpy(&(limp->matPrim[j]), &aux);
+				MatPrim aux;
+				CpyLimp(&aux, &(limp->matPrim[i]));
+				CpyLimp(&(limp->matPrim[i]), &(limp->matPrim[j]));
+				CpyLimp(&(limp->matPrim[j]), &aux);
 			}
 		}
 	}

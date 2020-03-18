@@ -3,7 +3,7 @@
 
 void TestCreateM_Prim()
 {
-	m_prim Test_mprim = m_create("faina", "panemar", 23);
+	MatPrim Test_mprim = MatPrimCreate("faina", "panemar", 23);
 	assert(strcmp(Test_mprim.name, "faina") == 0);
 	assert(strcmp(Test_mprim.producator, "panemar") == 0);
 	assert(Test_mprim.quantity == 23);
@@ -14,7 +14,7 @@ void TestCreateM_Prim()
 
 void TestSetters()
 {
-	m_prim Test_mprim = m_create("faina", "panemar", 23);
+	MatPrim Test_mprim = MatPrimCreate("faina", "panemar", 23);
 	set_name(&Test_mprim, "cereale");
 	set_prod(&Test_mprim, "donald");
 	set_quantity(&Test_mprim, 4);
@@ -28,7 +28,7 @@ void TestSetters()
 
 void TestListDestroy()
 {
-	m_prim T_mprim = m_create("faina", "panemar", 23);
+	MatPrim T_mprim = MatPrimCreate("faina", "panemar", 23);
 	ListMP T_list = l_create();
 	l_add(&T_list, &T_mprim);
 	destroyListMP(&T_list);

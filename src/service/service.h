@@ -6,7 +6,7 @@ int add(ListMP* limp, char* name, char* producator, int quantity);
 
 int validate_unique(const ListMP* limp, char* name);
 
-void l_add(ListMP* limp, m_prim* matPrim);
+void l_add(ListMP* limp, MatPrim* matPrim);
 
 int search(ListMP* limp, char* name);
 
@@ -20,10 +20,8 @@ int sort_name(ListMP* limp);
 
 int sort_quantity(ListMP* limp);
 
-extern void* new(size_t size);
 
-extern void delete(void* memory, size_t size);
 
-extern void PrintCurrentUsage();
+
 
 

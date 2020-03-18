@@ -1,9 +1,10 @@
 #include "ui.h"
+#include <stdlib.h>
 #pragma warning(disable:4996)
 
-#define MAX_CMD_LEN 50
+#define MAX_CMD_LEN 100
 #define NO_COMMANDS 6
-#define PARAMS_L 20
+#define PARAMS_L 50
 
 /*
 	Functie care verifica daca un sir de caractere poate fi interpretat ca un numar
@@ -28,7 +29,7 @@ int validate_int(char* q)
 	Functie care afiseaza elementele unei materii prime intr-un format stabilit
 	Params: o materie prima
 */
-void print_mat_prim(m_prim* matPrim)
+void print_mat_prim(MatPrim* matPrim)
 {
 	printf("Numele produsului: %s\nNumele producatorului: %s\nCantitate: %llu\n\n", matPrim->name, matPrim->producator, matPrim->quantity);
 }
@@ -74,7 +75,7 @@ int print_all_c_letter(ListMP* limp, char* criteria)
 int print_all_q_lower(ListMP* limp, size_t q)
 {
 	if (limp->length == 0)
-		return -1;
+		return 1337;
 	for (size_t i = 0; i < limp->length; i++)
 	{
 		if (limp->matPrim[i].quantity < q)
@@ -127,31 +128,51 @@ int c_print(ListMP* limp, char* criteria, int mode)
 	Returneaza coduri de eroare pentru fiecare caz ce poate sa apara.
 	Codurile de eroare pot fi consultate in functia ErrorHandler
 */
-int split_params_add(char* params, char* name, char* prod, char* q)
+int split_params_add(char* params, char** name, char** prod, char** q)
 {	
+	size_t length = 0;
+
 	char* ptr = strtok(params, " ");
 	
 	if (ptr == NULL)
 		return -2;
 	//get the name
-	strcpy(name, ptr);
+	length = strlen(ptr) + 1;
+	*name = (char*)malloc(length);
+	strcpy(*name, ptr);
 	
 	//get the producer
 	ptr = strtok(NULL, " ");
 	if (ptr == NULL)
+	{
+		free(*name);
 		return -2;
-	strcpy(prod, ptr);
+	}
+	length = strlen(ptr) + 1;
+	*prod = (char*)malloc(length);
+	strcpy(*prod, ptr);
 
 
 	//get the quantity
 	ptr = strtok(NULL, " ");
 	if (ptr == NULL)
+	{
+		free(*name);
+		free(*prod);
 		return -2;
-	strcpy(q, ptr);
+	}
+	length = strlen(ptr) + 1;
+	*q = (char*)malloc(length);
+	strcpy(*q, ptr);
 
 	ptr = strtok(NULL, " ");
 	if (ptr != NULL)
+	{
+		free(*name);
+		free(*prod);
+		free(*q);
 		return -2;
+	}
 
 	return 0;
 }
@@ -165,27 +186,46 @@ int split_params_add(char* params, char* name, char* prod, char* q)
 	Returneaza coduri de eroare pentru fiecare caz ce poate sa apara.
 	Codurile de eroare pot fi consultate in functia ErrorHandler
 */
-int split_params_modify(char* params, char* option, char* name, char* modify)
+int split_params_modify(char* params, char** option, char** name, char** modify)
 {
+	size_t length = 0;
+
 	char* ptr = strtok(params, " ");
 	if (ptr == NULL)
 		return -2;
-
-	strcpy(option, ptr);
-
-	ptr = strtok(NULL, " ");
-	if (ptr == NULL)
-		return -2;
-	strcpy(name, ptr);
+	length = strlen(ptr);
+	*option = (char*)malloc(length + 1);
+	strcpy(*option, ptr);
 
 	ptr = strtok(NULL, " ");
 	if (ptr == NULL)
+	{
+		free(*option);
 		return -2;
-	strcpy(modify, ptr);
+	}
+	length = strlen(ptr);
+	*name = (char*)malloc(length + 1);
+	strcpy(*name, ptr);
+
+	ptr = strtok(NULL, " ");
+	if (ptr == NULL)
+	{
+		free(*option);
+		free(*name);
+		return -2;
+	}
+	length = strlen(ptr);
+	*modify = (char*)malloc(length + 1);
+	strcpy(*modify, ptr);
 
 	ptr = strtok(NULL, " ");
 	if (ptr != NULL)
+	{
+		free(*option);
+		free(*name);
+		free(*modify);
 		return -2;
+	}
 
 	return 0;
 }
@@ -194,53 +234,65 @@ int split_params_modify(char* params, char* option, char* name, char* modify)
 	Functie specializata in citirea datelor de intrare de la utilizator
 	Returneaza numarul e caractere citite
 */
-size_t read_command(char* buffer)
+size_t read_command(char** buffer)
 {
 	size_t i = 0;
 	size_t stream_length = 0;
 	int ch;
 
-	while ((ch = fgetc(stdin)) != EOF)
-	{
-		stream_length++;
-		if (i + 1 < MAX_CMD_LEN)
+	*buffer = (char*)malloc(MAX_CMD_LEN);
+	if(*buffer != NULL)
+		while ((ch = fgetc(stdin)) != EOF)
 		{
 			if (ch == '\n')
 			{
 				if(i == 0)
-					buffer[i++] = ch;
+					(*buffer)[i++] = ch;
 				break;
 			}
-			buffer[i++] = ch;
-		}
+			(*buffer)[i++] = ch;
+			if (i == MAX_CMD_LEN - 1)
+			{
+				char* temp = (char*)malloc(MAX_CMD_LEN * 2);
+				for (size_t j = 0; j < strlen(*buffer); j++)
+				{
+					temp[j] = (*buffer)[j];
+				}
+				free(*buffer);
+				*buffer = temp;
+			}
 		
-	}
-	buffer[i] = '\0';
+		
+		}	
+	if(*buffer != NULL)
+		(*buffer)[i] = '\0';
 	if (i == 0)
+	{
+		free(*buffer);
 		return -1;
-	if (stream_length > MAX_CMD_LEN)
-		return -1;
+	}
 	return i;
 }
 
 /*
 	Functie care separa parametrii de comanda dintr-un input de la utilizator
 */
-void get_params(char* cmd, char* params, size_t cmd_length, size_t* params_length)
+void get_params(char* cmd, char** params, size_t cmd_length, size_t* params_length)
 {
 	for (size_t i = 0; i < cmd_length; i++)
 	{
 		if (cmd[i] == ' ')
 		{
+			*params = (char*)malloc(cmd_length - i + 1);
 			char* from_where = cmd + i + 1;
-			strncpy(params, from_where, PARAMS_L);
+			strncpy(*params, from_where, cmd_length - i);
 			*params_length = cmd_length - i;
 			cmd[i] = '\0';
 			return;
 
 		}
 	}
-	strcpy(params, "");
+	*params = NULL;
 	*params_length = 0;
 }
 
@@ -315,17 +367,21 @@ int identify_option(char* option)
 	Returneaza coduri de eroare pentru fiecare caz ce poate sa apara.
 	Codurile de eroare pot fi consultate in functia ErrorHandler
 */
-int split_params_del(char* params, char* name)
+int split_params_del(char* params, char** name)
 {
 	char* ptr = strtok(params, " ");
 	if (ptr == NULL)
 		return -2;
-
-	strcpy(name, ptr);
+	size_t length = strlen(ptr);
+	*name = (char*)malloc(length + 1);
+	strcpy(*name, ptr);
 
 	ptr = strtok(NULL, " ");
 	if (ptr != NULL)
+	{
+		free(*name);
 		return -2;
+	}
 
 	return 0;
 }
@@ -337,21 +393,30 @@ int split_params_del(char* params, char* name)
 	Returneaza coduri de eroare pentru fiecare caz ce poate sa apara.
 	Codurile de eroare pot fi consultate in functia ErrorHandler
 */
-int split_params_c_view(char* params, char* option, char* criteria)
+int split_params_c_view(char* params, char** option, char** criteria)
 {
 	char* ptr = strtok(params, " ");
 	if (ptr == NULL)
 		return -2;
-	strcpy(option, ptr);
+	*option = (char*)malloc(strlen(ptr) + 1);
+	strcpy(*option, ptr);
 
 	ptr = strtok(NULL, " ");
 	if (ptr == NULL)
+	{
+		free(*option);
 		return -2;
-	strcpy(criteria, ptr);
+	}
+	*criteria = (char*)malloc(strlen(ptr) + 1);
+	strcpy(*criteria, ptr);
 
 	ptr = strtok(NULL, " ");
 	if (ptr != NULL)
+	{
+		free(*option);
+		free(*criteria);
 		return -2;
+	}
 
 	return 0;
 }
@@ -363,14 +428,14 @@ int split_params_c_view(char* params, char* option, char* criteria)
 */
 int ui_add(ListMP* limp, char* params)
 {
-	char name[PARAMS_L];
-	char prod[PARAMS_L];
-	char q[PARAMS_L];
+	char* name = NULL;
+	char* prod = NULL;
+	char* q = NULL;
 	int quantity = 0;
 
 	int error_code = 0;
 
-	error_code = split_params_add(params, name, prod, q);
+	error_code = split_params_add(params, &name, &prod, &q);
 	if (error_code != 0)
 		return error_code;
 
@@ -378,9 +443,18 @@ int ui_add(ListMP* limp, char* params)
 	error_code = validate_int(q);
 	if (error_code == 0)
 		quantity = char2int(q);
-	else return error_code;
+	else
+	{
+		free(name);
+		free(prod);
+		free(q);
+		return error_code;
+	}
 
 	error_code = add(limp, name, prod, quantity);
+	free(name);
+	free(prod);
+	free(q);
 	return error_code;
 
 }
@@ -392,25 +466,37 @@ int ui_add(ListMP* limp, char* params)
 */
 int ui_modify(ListMP* limp, char* params)
 {
-	char name[PARAMS_L];
-	char option[PARAMS_L];
-	char to_modify[PARAMS_L];
+	char* name = NULL;
+	char* option = NULL;
+	char* to_modify = NULL;
 
 	int error_code = 0;
-	error_code = split_params_modify(params, option, name, to_modify);
+	error_code = split_params_modify(params, &option, &name, &to_modify);
 	if (error_code != 0)
 		return error_code;
 
 	int op = identify_option(option);
 	if (op == -1)
+	{
+		free(name);
+		free(option);
+		free(to_modify);
 		return -3;
+	}
 
 	if (op == 2)
 		if (validate_int(to_modify) != 0)
+		{
+			free(name);
+			free(option);
+			free(to_modify);
 			return -1;
+		}
 
 	error_code = modify(limp, name, to_modify, op);
-
+	free(name);
+	free(option);
+	free(to_modify);
 	return error_code;
 }
 /*
@@ -420,14 +506,18 @@ int ui_modify(ListMP* limp, char* params)
 */
 int ui_del(ListMP* limp, char* params)
 {
-	char name[PARAMS_L];
+	char* name = NULL;
 
 	int error_code = 0;
-	error_code = split_params_del(params, name);
+	error_code = split_params_del(params, &name);
 	if (error_code != 0)
+	{
+		free(name);
 		return error_code;
+	}
 
 	error_code = del(limp, name);
+	free(name);
 	return error_code;
 }
 /*
@@ -437,25 +527,33 @@ int ui_del(ListMP* limp, char* params)
 */
 int ui_c_view(ListMP* limp, char* params)
 {
-	char criteria[PARAMS_L];
-	char option[PARAMS_L];
+	char* criteria;
+	char* option;
 	int error_code = 0;
 	int op = 0;
 
-	error_code = split_params_c_view(params, option, criteria);
+	error_code = split_params_c_view(params, &option, &criteria);
 	if (error_code != 0)
 		return -2;
 
 	op = identify_option(option);
-	if (op == -1 || op== 1)
+	if (op == -1 || op == 1)
+	{
+		free(criteria);
+		free(option);
 		return -3;
+	}
 
 	error_code = c_print(limp, criteria, op);
-	if (error_code == -1)
+	if (error_code == 1337)
 	{
+		free(criteria);
+		free(option);
 		printf("The list is empty!");
 		return 1337;
 	}
+	free(criteria);
+	free(option);
 	if (error_code == 0)return 1337;
 	return error_code;
 }
@@ -466,24 +564,37 @@ int ui_c_view(ListMP* limp, char* params)
 */
 int ui_o_view(ListMP* limp, char* params)
 {
+	if (params == NULL)
+		return -2;
+
 	int error_code = 0;
-	char option[PARAMS_L];
+	
 	char* ptr = strtok(params, " ");
 	if (ptr == NULL)
 		return -2;
-	strcpy(option, ptr);
+	size_t length = strlen(ptr);
+	char* option = (char*)malloc(length + 1);
+	if(option != NULL)
+		strcpy(option, ptr);
 
 	ptr = strtok(NULL, " ");
 	if (ptr != NULL)
+	{
+		free(option);
 		return -2;
+	}
 
 	int mode = 0;
-	if (strcmp(option, "-n") == 0)
-		mode = 0;
-	else if (strcmp(option, "-q") == 0)
-		mode = 2;
-	else return -3;
-
+	if(option != NULL)
+		if (strcmp(option, "-n") == 0)
+			mode = 0;
+		else if (strcmp(option, "-q") == 0)
+			mode = 2;
+		else
+		{
+			free(option);
+			return -3;
+		}
 	if (mode == 0)
 		error_code = sort_name(limp);
 	else
@@ -493,6 +604,8 @@ int ui_o_view(ListMP* limp, char* params)
 		printf("The list is empty!\n");
 	else
 		print_all(limp);
+
+	free(option);
 	return 1337;
 }
 /*
@@ -502,8 +615,7 @@ int ui_o_view(ListMP* limp, char* params)
 */
 int ui_print(ListMP* limp, char* params)
 {
-	char* ptr = strtok(params, " ");
-	if (ptr != NULL)
+	if (params != NULL)
 		return -2;
 	int code = print_all(limp);
 	if (code == -1)
@@ -517,18 +629,20 @@ int ui_print(ListMP* limp, char* params)
 */
 void run(ListMP* limp)
 {
-	char cmd[MAX_CMD_LEN];
+	char* cmd = NULL;
 	size_t cmd_length = 0, command_index = 0;
 
 	//COMMANDS 
-	char* menu = "\n  add - Adds <materie_prima>\t  ex: add faina panemar 12\n\n  modify - Modifies <materie_prima>\t  ex: modify -n faina paine\n\t-n -> the name,\n\t-p -> the producer,\n\t-q -> the quantity\n\n  del - Deletes <materie_prima>\t  ex: del paine\n\n  c_view - View the list based on a criteria \t  ex: c_view -n p\n\t-n -> <materiile_prime> which names that start with a character,\n\t-q -> <materiile_prime> which quantity is less than a given number;\n\n  o_view - View the list ordered by:\t  ex: o_view -q\n\t-n -> name\n\t-q -> quantity\n\n  print - Prints the list of <materii_prime>\tex: print\n\n  exit - Exits the program\n\n";
+	char* menu = "\n  add - Adds <materie_prima>\t  ex: add faina panemar 12\n\n  modify - Modifies <materie_prima>\t  ex: modify -n faina paine\n\t-n -> the name,\n\t-p -> the producer,\n\t-q -> the quantity\n\n  del - Deletes <materie_prima>\t  ex: del paine\n\n  c_view - View the list based on a criteria \t  ex: c_view -n p\n\t-n -> <materiile_prime> which names start with a character,\n\t-q -> <materiile_prime> which quantity is less than a given number;\n\n  o_view - View the list ordered by:\t  ex: o_view -q\n\t-n -> name\n\t-q -> quantity\n\n  print - Prints the list of <materii_prime>\tex: print\n\n  exit - Exits the program\n\n";
 
+	//Indexul comenzii gasite aici corespunde indexului functiei care trebuie preluata din lista cu pointeri "commander"
 	char* commands[MAX_CMD_LEN] = { "add", "modify", "del", "c_view", "o_view", "print" };
 
+	//Lista cu pointeri catre functiile care trebuiesc apelate in functie de comanda primita
 	int(*commander[NO_COMMANDS])(ListMP* limp, char* params) = { ui_add, ui_modify, ui_del, ui_c_view, ui_o_view, ui_print };
 
 	//PARAMS
-	char params[PARAMS_L];
+	char* params = NULL;
 	size_t params_length = 0;
 
 	printf("Type \"help\" for the menu\n");
@@ -536,25 +650,38 @@ void run(ListMP* limp)
 	while (true)
 	{
 		_write(1, ">>", 2);
-		cmd_length = read_command(cmd);
-		
-		if (cmd[0] == '\n')continue;
+		cmd_length = read_command(&cmd);
+		if (cmd[0] == '\n')
+		{
+			free(cmd);
+			continue;
+		}
+		if (cmd_length > MAX_CMD_LEN)
+		{
+			printf("Parameters are too large!\n");
+			free(cmd);
+			continue;
+		}
 
 		if (cmd_length != -1)
 		{
-			get_params(cmd, params, cmd_length, &params_length);
+			//separa parametrii de comanda din string-ul primit de la utilizator
+			get_params(cmd, &params, cmd_length, &params_length);
 
 			if (strcmp(cmd, "help") == 0) {
 				printf("%s", menu);
+				free(cmd);
 				continue;
 			}
 
 			if (strcmp(cmd, "exit") == 0)
 			{
 				printf("Process terminated!\n");
+				free(cmd);
 				break;
 			}
 
+			//valideaza comanda si intoarce indexul din lista de pointeri catre functii
 			command_index = validate_command(cmd, commands);
 
 			if (command_index != -1)
@@ -565,14 +692,23 @@ void run(ListMP* limp)
 					printf("%s\n", ErrorHandler(error_code));
 				else
 					printf("Successful!\n");
+				if(cmd_length != 0)
+					free(cmd);
+				if(params_length != 0)
+					free(params);
 			}	
 
 			else {
+				free(cmd);
 				printf("Unknown command!\nType \"help\" to see the commands!\n");
 			}
 		}
 		else
+		{
 			printf("Unknown command!\nType \"help\" to see the commands!\n");
-	}
+
+			free(cmd);
+		}
 		
+	}
 }

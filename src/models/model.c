@@ -1,51 +1,58 @@
 #include "model.h"
 #pragma warning(disable:4996)
 
-m_prim m_create(char* name, char* producator, size_t quantity)
+MatPrim MatPrimCreate(char* name, char* producator, size_t quantity)
 {
-	m_prim matPrim;
+	MatPrim matPrim;
 
 	size_t nL = strlen(name);
 	matPrim.name_length = nL;
-	matPrim.name = (char*)new(nL + 1);
-	strncpy(matPrim.name, name, nL);
+	matPrim.name = (char*)malloc(nL + 1);
+	if(matPrim.name != NULL)
+		strncpy(matPrim.name, name, nL);
 	matPrim.name[nL] = '\0';
 
 	size_t pL = strlen(producator);
 	matPrim.prod_length = pL;
-	matPrim.producator = (char*)new(pL + 1);
-	strncpy(matPrim.producator, producator, pL);
+	matPrim.producator = (char*)malloc(pL + 1);
+	if(matPrim.producator != NULL)
+		strncpy(matPrim.producator, producator, pL);
 	matPrim.producator[pL] = '\0';
 
 	matPrim.quantity = quantity;
 	return matPrim;
 }
 
-void set_name(m_prim* matPrim, char* name)
+void set_name(MatPrim* matPrim, char* name)
 {
 	size_t n = strlen(name);
-	delete(matPrim->name, matPrim->name_length + 1);
+	free(matPrim->name);
 
-	matPrim->name = (char*)new(n + 1);
+	matPrim->name = (char*)malloc(n + 1);
 	strcpy(matPrim->name, name);
 
-	matPrim->name[n] = '\0';
+	if(matPrim->name != NULL)
+		matPrim->name[n] = '\0';
 	matPrim->name_length = n;
 }
 
-void set_prod(m_prim* matPrim, char* prod)
+void set_prod(MatPrim* matPrim, char* prod)
 {
 	size_t n = strlen(prod);
-	delete(matPrim->producator, matPrim->prod_length + 1);
-
-	matPrim->producator = (char*)new(n + 1);
-	strcpy(matPrim->producator, prod);
+	//free(matPrim->producator);
+	char* temp = matPrim->producator;
+	matPrim->producator = (char*)malloc(n + 1);
+	if(matPrim->producator != NULL)
+		strcpy(matPrim->producator, prod);
 	
-	matPrim->producator[n] = '\0';
+	free(temp);
+
+	if(matPrim->producator != NULL)
+		matPrim->producator[n] = '\0';
 	matPrim->prod_length = n;
 }
 
-void set_quantity(m_prim* matPrim, int q)
+void set_quantity(MatPrim* matPrim, int q)
 {
 	matPrim->quantity = q;
 }
@@ -57,17 +64,26 @@ ListMP l_create()
 	return limp;
 }
 
-void destroyM_Prim(m_prim* matPrim)
+void destroyM_Prim(MatPrim* matPrim)
 {
-	delete(matPrim->name, matPrim->name_length + 1);
-	delete(matPrim->producator, matPrim->prod_length + 1);
+	free(matPrim->name);
+	free(matPrim->producator);
 }
 
 void destroyListMP(ListMP* limp)
 {
 	for (size_t i = 0; i < limp->length; i++)
 	{
-		delete(limp->matPrim[i].name, limp->matPrim[i].name_length + 1);
-		delete(limp->matPrim[i].producator, limp->matPrim[i].prod_length + 1);
+		free(limp->matPrim[i].name);
+		free(limp->matPrim[i].producator);
 	}
+}
+
+void CpyLimp(MatPrim* m1, MatPrim* m2)
+{
+	m1->name = m2->name;
+	m1->producator = m2->producator;
+	m1->name_length = m2->name_length;
+	m1->prod_length = m2->prod_length;
+	m1->quantity = m2->quantity;
 }

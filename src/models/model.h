@@ -1,5 +1,6 @@
 #pragma once
 #include <string.h>
+#include <stdlib.h>
 
 #define true 1
 #define false 0
@@ -16,25 +17,28 @@ typedef struct {
 	size_t prod_length;
 
 	size_t quantity;
-}m_prim;
+}MatPrim;
 
 
 typedef struct {
-	m_prim matPrim[100];
+	MatPrim matPrim[100];
 	size_t length;
 }ListMP;
 
 ListMP l_create();
 
 //void l_add(ListMP* limp, m_prim* matPrim);
-m_prim m_create(char* name, char* producator, size_t quantity);
+MatPrim MatPrimCreate(char* name, char* producator, size_t quantity);
 
-void set_name(m_prim* matPrim, char* name);
-void set_prod(m_prim* matPrim, char* prod);
-void set_quantity(m_prim* matPrim, int q);
+void set_name(MatPrim* matPrim, char* name);
+void set_prod(MatPrim* matPrim, char* prod);
+void set_quantity(MatPrim* matPrim, int q);
 
-void destroyM_Prim(m_prim* matPrim);
+void destroyM_Prim(MatPrim* matPrim);
+
 void destroyListMP(ListMP* limp);
+
+void CpyLimp(MatPrim* m1, MatPrim* m2);
 
 
 

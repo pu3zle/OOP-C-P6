@@ -28,48 +28,13 @@ Aplicatia permite:
 #include <stdlib.h>
 #include "tests\tests.h"
 
-typedef struct {
-
-	size_t TotalAllocated;
-	size_t TotalFreed;
-
-}AllocMaster;
-
-
-AllocMaster s_AllocMaster;
-
-void* new(size_t size)
-{
-	s_AllocMaster.TotalAllocated += size;
-
-	return malloc(size);
-}
-
-void delete(void* memory, size_t size)
-{
-	s_AllocMaster.TotalFreed += size;
-
-	free(memory);
-}
-
-
-void PrintCurrentUsage()
-{
-	size_t currentUsage = s_AllocMaster.TotalAllocated - s_AllocMaster.TotalFreed;
-	printf("There are currently %llu bytes of memory in use!\n", currentUsage);
-}
-
 int main()
 {
 	runTests();
 
-	s_AllocMaster.TotalAllocated = 0;
-	s_AllocMaster.TotalFreed = 0;
-
 	ListMP limp = l_create();
 	run(&limp);
 	destroyListMP(&limp);
-	PrintCurrentUsage();
 	_CrtDumpMemoryLeaks();
 	return 0;
 }
