@@ -1,5 +1,6 @@
 #pragma once
 #include "..\models\model.h"
+#include "..\models\list.h"
 #include "..\validator\validator.h"
 
 /*
@@ -15,13 +16,6 @@ int add(ListMP* limp, char* name, char* provider, int quantity);
 			name - string
 */
 int validate_unique(const ListMP* limp, char* name);
-
-/*	
-	Functie auxiliara pentru functia "add"
-	l_add = list add
-	Adauga in lista o materie prima
-*/
-void l_add(ListMP* limp, MatPrim* matPrim);
 
 /*
 	Functia cauta in lista de materii prime "limp" materia prima cu numele "name"
@@ -55,17 +49,13 @@ int del(ListMP* limp, char* name);
 int char2int(char* q);
 
 /*
-	Functie care sorteaza lista de materii prime in functie de numele acestora
+	Functie care sorteaza lista de materii prime dupa o functie de comparare
 */
-int sort_name(ListMP* limp);
+int sort(ListMP* limp, int reverse, int(*Comparison)(MatPrim*, MatPrim*));
 
-/*
-	Functie care sorteaza lista de materii prime in functie de cantitatea acestora
-*/
-int sort_quantity(ListMP* limp);
+int QuantityComparison(MatPrim* a, MatPrim* b);
 
-
-
+int NameComparison(MatPrim* a, MatPrim* b);
 
 
 

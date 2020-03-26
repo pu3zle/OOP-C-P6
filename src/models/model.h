@@ -18,20 +18,10 @@ typedef struct {
 	size_t quantity;
 }MatPrim;
 
-/*
-	Reprezentarea listei de materii prime ca un tip de date
-*/
-typedef struct {
-	MatPrim* matPrim;
-	size_t length;
-	size_t size;
-}ListMP;
 
-//Constructor pentru lista de materii prime
-ListMP l_create();
 
 //Constructor pentru materii prime
-MatPrim MatPrimCreate(char* name, char* provider, size_t quantity);
+MatPrim* MatPrimCreate(char* name, char* provider, size_t quantity);
 
 //Set-ere pentru field-urile materiei prime
 void set_name(MatPrim* matPrim, char* name);
@@ -45,11 +35,6 @@ void set_quantity(MatPrim* matPrim, int q);
 void destroyM_Prim(MatPrim* matPrim);
 
 /*
-	Functie care se ocupa de eliberarea memoriei alocate de o lista de materii prime
-*/
-void destroyListMP(ListMP* limp);
-
-/*
 	Functie care copiaza informatiile dintr-o materie prima (m1) in alta materie prima (m2)
 */
 void CpyLimp(MatPrim* m1, MatPrim* m2);
@@ -57,5 +42,5 @@ void CpyLimp(MatPrim* m1, MatPrim* m2);
 /*
 	Functie care rezerva un spatiu "NewSize" pentru o materie prima "mat_prim" cu "Length" elemente
 */
-void ReserveNewMatPrim(MatPrim** mat_prim, size_t NewSize, size_t Length);
+void ReserveNewMatPrim(MatPrim*** mat_prim, size_t NewSize, size_t Length);
 

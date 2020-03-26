@@ -1,6 +1,5 @@
 #pragma once
 #include <string.h>
-#pragma warning(disable:4996)
 
 /*
 	Functie care valideaza daca un string este gol

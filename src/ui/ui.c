@@ -1,6 +1,5 @@
 #include "ui.h"
 #include <stdlib.h>
-#pragma warning(disable:4996)
 
 #define MAX_CMD_LEN 100
 #define NO_COMMANDS 6
@@ -45,7 +44,7 @@ int print_all(ListMP* limp)
 		return -1;
 	for (size_t i = 0; i < limp->length; i++)
 	{
-		print_mat_prim(&(limp->matPrim[i]));
+		print_mat_prim(limp->matPrim[i]);
 	}
 	return 0;
 }
@@ -61,8 +60,8 @@ int print_all_c_letter(ListMP* limp, char* criteria)
 		return -1;
 	for (size_t i = 0; i < limp->length; i++)
 	{
-		if(limp->matPrim[i].name[0] == criteria[0])
-			print_mat_prim(&(limp->matPrim[i]));
+		if(limp->matPrim[i]->name[0] == criteria[0])
+			print_mat_prim(limp->matPrim[i]);
 	}
 	return 0;
 }
@@ -78,8 +77,8 @@ int print_all_q_lower(ListMP* limp, size_t q)
 		return 1337;
 	for (size_t i = 0; i < limp->length; i++)
 	{
-		if (limp->matPrim[i].quantity < q)
-			print_mat_prim(&(limp->matPrim[i]));
+		if (limp->matPrim[i]->quantity < q)
+			print_mat_prim(limp->matPrim[i]);
 	}
 	return 0;
 }
@@ -234,44 +233,44 @@ int split_params_modify(char* params, char** option, char** name, char** modify)
 	Functie specializata in citirea datelor de intrare de la utilizator
 	Returneaza numarul e caractere citite
 */
-size_t read_command(char** buffer)
+char* read_command(int* cmd_length)
 {
-	size_t i = 0;
-	size_t stream_length = 0;
+	int i = 0;
 	int ch;
 
-	*buffer = (char*)malloc(MAX_CMD_LEN);
-	if(*buffer != NULL)
+	char* buffer = (char*)malloc(MAX_CMD_LEN);
+	if(buffer != NULL)
 		while ((ch = fgetc(stdin)) != EOF)
 		{
 			if (ch == '\n')
 			{
 				if(i == 0)
-					(*buffer)[i++] = ch;
+					buffer[i++] = '\n';
 				break;
 			}
-			(*buffer)[i++] = ch;
+			buffer[i++] = (char)ch;
 			if (i == MAX_CMD_LEN - 1)
 			{
 				char* temp = (char*)malloc(MAX_CMD_LEN * 2);
-				for (size_t j = 0; j < strlen(*buffer); j++)
+				for (size_t j = 0; j < strlen(buffer); j++)
 				{
-					temp[j] = (*buffer)[j];
+					temp[j] = buffer[j];
 				}
-				free(*buffer);
-				*buffer = temp;
+				free(buffer);
+				buffer = temp;
 			}
 		
 		
 		}	
-	if(*buffer != NULL)
-		(*buffer)[i] = '\0';
+	if(buffer != NULL)
+		buffer[i] = '\0';
 	if (i == 0)
 	{
-		free(*buffer);
-		return -1;
+		free(buffer);
+		return NULL;
 	}
-	return i;
+	*cmd_length = i;
+	return buffer;
 }
 
 /*
@@ -569,6 +568,7 @@ int ui_o_view(ListMP* limp, char* params)
 
 	int error_code = 0;
 	
+	//get option parameter
 	char* ptr = strtok(params, " ");
 	if (ptr == NULL)
 		return -2;
@@ -577,11 +577,38 @@ int ui_o_view(ListMP* limp, char* params)
 	if(option != NULL)
 		strcpy(option, ptr);
 
+	//get reversed parameter
+	ptr = strtok(NULL, " ");
+	if (ptr == NULL)
+	{
+		free(option);
+		return -2;
+	}
+	length = strlen(ptr);
+	char* reversed = (char*)malloc(length + 1);
+	if (reversed != NULL)
+		strcpy(reversed, ptr);
+
 	ptr = strtok(NULL, " ");
 	if (ptr != NULL)
 	{
 		free(option);
+		free(reversed);
 		return -2;
+	}
+
+	int rev = 0;
+	if (reversed != NULL)
+	{
+		if (strcmp(reversed, "-i") == 0)
+			rev = 0;
+		else if (strcmp(reversed, "-d") == 0)
+			rev = 1;
+		else {
+			free(option);
+			free(reversed);
+			return -3;
+		}
 	}
 
 	int mode = 0;
@@ -593,12 +620,13 @@ int ui_o_view(ListMP* limp, char* params)
 		else
 		{
 			free(option);
+			free(reversed);
 			return -3;
 		}
 	if (mode == 0)
-		error_code = sort_name(limp);
+		error_code = sort(limp, rev, NameComparison);
 	else
-		error_code = sort_quantity(limp);
+		error_code = sort(limp, rev, QuantityComparison);
 
 	if (error_code == -1)
 		printf("The list is empty!\n");
@@ -606,6 +634,7 @@ int ui_o_view(ListMP* limp, char* params)
 		print_all(limp);
 
 	free(option);
+	free(reversed);
 	return 1337;
 }
 /*
@@ -629,11 +658,10 @@ int ui_print(ListMP* limp, char* params)
 */
 void run(ListMP* limp)
 {
-	char* cmd = NULL;
-	size_t cmd_length = 0, command_index = 0;
+	int cmd_length = 0, command_index = 0;
 
 	//COMMANDS 
-	char* menu = "\n  add - Adds <materie_prima>\t  ex: add faina panemar 12\n\n  modify - Modifies <materie_prima>\t  ex: modify -n faina paine\n\t-n -> the name,\n\t-p -> the producer,\n\t-q -> the quantity\n\n  del - Deletes <materie_prima>\t  ex: del paine\n\n  c_view - View the list based on a criteria \t  ex: c_view -n p\n\t-n -> <materiile_prime> which names start with a character,\n\t-q -> <materiile_prime> which quantity is less than a given number;\n\n  o_view - View the list ordered by:\t  ex: o_view -q\n\t-n -> name\n\t-q -> quantity\n\n  print - Prints the list of <materii_prime>\tex: print\n\n  exit - Exits the program\n\n";
+	char* menu = "\n  add - Adds <materie_prima>\t  ex: add faina panemar 12\n\n  modify - Modifies <materie_prima>\t  ex: modify -n faina paine\n\t-n -> the name,\n\t-p -> the producer,\n\t-q -> the quantity\n\n  del - Deletes <materie_prima>\t  ex: del paine\n\n  c_view - View the list based on a criteria \t  ex: c_view -n p\n\t-n -> <materiile_prime> which names start with a character,\n\t-q -> <materiile_prime> which quantity is less than a given number;\n\n  o_view - View the list ordered by:\t  ex: o_view -q\n  Primul parametru:\n\t-n -> name\n\t-q -> quantity\n  Al doilea parametru:\n\t-i increasing order\n\t-d decreasing order\n\n  print - Prints the list of <materii_prime>\tex: print\n\n  exit - Exits the program\n\n";
 
 	//Indexul comenzii gasite aici corespunde indexului functiei care trebuie preluata din lista cu pointeri "commander"
 	char* commands[MAX_CMD_LEN] = { "add", "modify", "del", "c_view", "o_view", "print" };
@@ -650,7 +678,8 @@ void run(ListMP* limp)
 	while (true)
 	{
 		_write(1, ">>", 2);
-		cmd_length = read_command(&cmd);
+		cmd_length = -1;
+		char* cmd = read_command(&cmd_length);
 		if (cmd[0] == '\n')
 		{
 			free(cmd);

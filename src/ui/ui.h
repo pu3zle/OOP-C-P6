@@ -1,4 +1,3 @@
-#pragma warning(disable:4996)
 #pragma once
 #include "..\service\service.h"
 #include <stdio.h>
