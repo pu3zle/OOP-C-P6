@@ -1,7 +1,7 @@
 # OOP-C-P6
 Project in C | University | 2nd Semester | OOP
 
-Project written between week 2 - 4 of the second semester of Computer Science as homework for OOP
+Project written between weeks 2 - 4 of the second semester of Computer Science as homework for OOP
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 COFETARIE 
 
